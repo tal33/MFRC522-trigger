@@ -18,6 +18,27 @@
 * python modules RPi.GPIO, spidev, pi-rc522, assertpy
 * enable the [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface) on the Raspberry Pi
 
+# Wiring from MFRC522 to Raspberry PI
+For SPI0 (original version, bus=0)
+* SDA: pin 24 (GPIO8, SPI0 CE0)
+* SCK: pin 23 (GPIO11, SPI0 SCKL)
+* MOSI: pin 19 (GPIO10, SPI0 MOSI)
+* MISO: pin 21 (GPIO9, SPI0 MISO)
+* IRQ: pin 18 (GPIO24, IRQ)
+* GND: pin 20 or 39 (GND)
+* RST: pin 22 (GPIO25, RST)
+* 3.3V: pin 17 (3.3V power)
+
+For SPI1 (my version, bus=1)
+* SDA: pin 12 (GPIO18, SPI1 CE1)
+* SCK: Pin 40 (GPIO21, SPI1 SCKL)
+* MOSI: pin 38 (GPIO20, SPI1 MOSI)
+* MISO: pin 35 (GPIO19, SPI1 MISO)
+* IRQ: pin 18 (GPIO24, IRQ)
+* GND: pin 20 or 39 (GND)
+* RST: pin 22 (GPIO25, RST)
+* 3.3V: pin 17 (3.3V power)
+
 # Manual Installation
 
 * ssh into your Raspberry Pi and execute
@@ -34,6 +55,7 @@ $ sudo pip3 install assertpy
 * add the following lines somewhere in the file
 ```
 dtparam=spi=on
+dtoverlay=spi1-1cs
 dtoverlay=pi3-disable-bt
 enable_uart=1
 ```
