@@ -9,8 +9,12 @@
 * supported actions are
   * curling a URL
   * executing a command line
-* based on [pirc522](https://github.com/ondryaso/pi-rc522) which is based on the famous 
+* This is just an experimental fork of [MFRC522-trigger from layereight](https://github.com/ondryaso/pi-rc522) to tailor it to my needs.
+* For the time being I would recommend you use the original version instead of my fork!
+* Big thanks to layereight for this nice implementation!
+* MFRC522-trigger is based on [pirc522](https://github.com/ondryaso/pi-rc522) which is based on the famous 
 [MFRC522-python](https://github.com/mxgxw/MFRC522-python)
+
 
 # Prerequisites
 
