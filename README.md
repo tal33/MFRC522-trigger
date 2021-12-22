@@ -24,20 +24,21 @@ For SPI0 (original version, bus=0)
 * SCK: pin 23 (GPIO11, SPI0 SCKL)
 * MOSI: pin 19 (GPIO10, SPI0 MOSI)
 * MISO: pin 21 (GPIO9, SPI0 MISO)
-* IRQ: pin 18 (GPIO24, IRQ)
+* IRQ: pin 18 (GPIO24)
 * GND: pin 20 or 39 (GND)
 * RST: pin 22 (GPIO25, RST)
 * 3.3V: pin 17 (3.3V power)
 
-For SPI1 (my version, bus=1)
+For SPI1 (my version: bus=1, pin_irq=31)
 * SDA: pin 12 (GPIO18, SPI1 CE1)
 * SCK: Pin 40 (GPIO21, SPI1 SCKL)
 * MOSI: pin 38 (GPIO20, SPI1 MOSI)
 * MISO: pin 35 (GPIO19, SPI1 MISO)
-* IRQ: pin 18 (GPIO24, IRQ)
+* IRQ: pin 31 (GPIO6)
 * GND: pin 20 or 39 (GND)
 * RST: pin 22 (GPIO25, RST)
 * 3.3V: pin 17 (3.3V power)
+IRQ,RST,GND,power must not necessarily be moved for SPI1 but at least for my setup this was necessary
 
 # Manual Installation
 
