@@ -53,7 +53,7 @@ validate_config(config)
 logging.info("Press Ctrl-C to stop.")
 
 # create a reader
-reader = pirc522.RFID(bus=1, pin_irq=31)
+reader = pirc522.RFID(bus=1, pin_irq=31, pin_rst=29)
 
 current_tag = ''
 last_tag = ''

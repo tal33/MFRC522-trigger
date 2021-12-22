@@ -36,7 +36,7 @@ For SPI1 (my version: bus=1, pin_irq=31)
 * MISO: pin 35 (GPIO19, SPI1 MISO)
 * IRQ: pin 31 (GPIO6)
 * GND: pin 20 or 39 (GND)
-* RST: pin 22 (GPIO25, RST)
+* RST: pin 29 (GPIO5, RST)
 * 3.3V: pin 17 (3.3V power)
 IRQ,RST,GND,power must not necessarily be moved for SPI1 but at least for my setup this was necessary
 
