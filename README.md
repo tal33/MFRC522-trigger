@@ -49,20 +49,23 @@ enable_uart=1
 * Ansible is an automation tool, if you wanna know more about it have a look at 
   https://docs.ansible.com/ansible/latest/index.html
 * install Ansible on your local machine https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
-* on your local machine clone the repo https://github.com/layereight/MFRC522-trigger
+* on your local machine clone the repo https://github.com/layereight/MFRC522-trigger to a direcory named 'devel' (or adjust folder in MFRC522-trigger.yml)
 ```
+$ mkdir devel
+$ cd devel
 $ git clone https://github.com/layereight/MFRC522-trigger.git
 $ cd MFRC522-trigger/ansible
 $ vi inventory
 ```
 * replace the contents of the file *inventory* to point to your music box (e.g. my_raspi_host)
+* since this contains your password it is recommended that you *copy* inventory to a new file *my-inventory* (which is ignopred from git) so you don't accidentally push your settings
 ```
 [my_pi]
 my_raspi_host ansible_host=192.168.1.100 ansible_user=pi ansible_ssh_pass=raspberry
 ```
 * execute the ansible playbook, it runs for roughly 10 minutes, so go grab a coffee ;-)
 ```
-$ ansible-playbook -i inventory MFRC522-trigger.yml 
+$ ansible-playbook -i my-inventory MFRC522-trigger.yml 
 
 PLAY [Install prerequisite software] ************************************************
 
@@ -86,13 +89,7 @@ changed: [my_raspi_host]
 TASK [Reboot the machine when /boot/config.txt was changed] *************************
 changed: [my_raspi_host]
 
-PLAY [Clone MFRC522-trigger from github] ********************************************
-
-TASK [Create devel directory] *******************************************************
-changed: [my_raspi_host]
-
-TASK [Clone MFRC522-trigger from github] ********************************************
-changed: [my_raspi_host]
+PLAY [Init MFRC522-trigger in devel directory] **************************************
 
 TASK [Copy config.json from sample file] ********************************************
 changed: [my_raspi_host]

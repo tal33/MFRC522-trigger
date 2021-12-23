@@ -50,30 +50,30 @@
         name: pi-rc522
         executable: pip3
 
-- name: Prepare Raspberry Pi's /boot/config.txt
+- name: Prepare Raspberry Pi's /boot/userconfig.txt
   hosts: my_pi
   gather_facts: false
-  tags: [ boot_config ]
+  tags: [ boot_userconfig ]
 
   tasks:
 
-    - name: Alter /boot/config.txt
+    - name: Alter /boot/userconfig.txt
       become: yes
       blockinfile:
-        path: /boot/config.txt
-        insertbefore: "#### Volumio i2s setting below: do not alter ####"
+        path: /boot/userconfig.txt
+        insertafter: "# Add your custom config.txt options to this file, which will be preserved during updates"
+        marker: "# {mark} ansible manged for MFRC522-trigger"
         content: |
           dtparam=spi=on
           dtoverlay=pi3-disable-bt
-          enable_uart=1
-      register: boot_config
+      register: boot_userconfig
 
-    - name: Reboot the machine when /boot/config.txt was changed
+    - name: Reboot the machine when /boot/userconfig.txt was changed
       become: yes
       reboot:
-      when: boot_config.changed == true
+      when: boot_userconfig.changed == true
 
-- name: Clone MFRC522-trigger from github
+- name: Init MFRC522-trigger in devel directory
   hosts: my_pi
   gather_facts: false
   tags: [ clone ]
@@ -83,21 +83,9 @@
     target_dir: "devel/MFRC522-trigger"
 
   tasks:
-
-    - name: Create devel directory
-      file:
-        path: devel
-        state: directory
-
-    - name: Clone MFRC522-trigger from github
-      git:
-        repo: "https://github.com/layereight/MFRC522-trigger.git"
-        dest: "{{ target_dir }}"
-        force: yes
-
     - name: Copy config.json from sample file
       copy:
-        src: "{{ target_dir }}/config.json.sample"
+        src: "{{ target_dir }}/config.sample.json"
         remote_src: yes
         dest: "{{ target_dir }}/config.json"
         force: no
