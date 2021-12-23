@@ -56,7 +56,7 @@ $ sudo pip3 install assertpy
 * add the following lines somewhere in the file
 ```
 dtparam=spi=on
-dtoverlay=spi1-1cs
+dtoverlay=spi1-1cs  # only if you use SPI1
 dtoverlay=pi3-disable-bt
 enable_uart=1
 ```
