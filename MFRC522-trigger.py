@@ -12,6 +12,8 @@ import logging
 import logging.config
 import logging.handlers
 
+import statusled
+import volumiostatus
 from actions import NfcEvent, resolve
 from config import validate_config
 
@@ -49,8 +51,13 @@ def execute_action(event: NfcEvent, tag_id: str):
 
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
+statusled.setup()
 validate_config(config)
 logging.info("Press Ctrl-C to stop.")
+
+volumiostatus.waitForVolumio()
+logging.info("Volumio is ready")
+statusled.setRgb(False,True,False)
 
 # create a reader
 reader = pirc522.RFID()
@@ -114,5 +121,5 @@ while True:
     except Exception:
         logging.exception("Unexpected exception '%s' occurred!", str(sys.exc_info()[0].__name__))
         break
-
+statusled.destroy()
 reader.cleanup()
