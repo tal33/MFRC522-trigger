@@ -1,1 +1,1 @@
-from .statusled import setup, setRgb, destroy
+from .statusled import setup, setRed, setGreen, setYellow, setBlue, setWhite, destroy

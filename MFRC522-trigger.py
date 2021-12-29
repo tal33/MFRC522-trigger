@@ -56,8 +56,9 @@ validate_config(config)
 logging.info("Press Ctrl-C to stop.")
 
 volumiostatus.waitForVolumio()
+time.sleep(5)   # volumio API is ready before volumio is - so just wait a little longer
 logging.info("Volumio is ready")
-statusled.setRgb(False,True,False)
+statusled.setGreen()
 
 # create a reader
 reader = pirc522.RFID()
@@ -96,6 +97,7 @@ while True:
             execute_action(NfcEvent.REMOVE, current_tag)
             current_tag = ''
             polling = False
+            statusled.setGreen()
             continue
 
         # transform UID into string representation
@@ -111,6 +113,7 @@ while True:
 
         current_tag = tag_id
 
+        statusled.setYellow()
         # execute an action for the reading tag
         execute_action(NfcEvent.REDETECT if current_tag == last_tag else NfcEvent.DETECT, tag_id)
 
