@@ -66,6 +66,7 @@
         content: |
           dtparam=spi=on
           dtoverlay=pi3-disable-bt
+          enable_uart=1 # just to enable power status led on pin 5 (GPIO 3)
       register: boot_userconfig
 
     - name: Reboot the machine when /boot/userconfig.txt was changed

@@ -45,17 +45,19 @@ enable_uart=1
 # Automated Installation
 
 * all the steps from the manual installation can be done automatically
-* automated installation is achieved using [Ansible](https://docs.ansible.com/ansible/latest/index.html)
+* automated installation is achieved by using [Ansible](https://docs.ansible.com/ansible/latest/index.html)
 * Ansible is an automation tool, if you wanna know more about it have a look at 
   https://docs.ansible.com/ansible/latest/index.html
 * install Ansible on your local machine https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+* The automated install assumes that you have a /boot/userconfig.txt that is included from /boot/config. This is the default-setup for volumio3 distributions. Otherwise add include userconfig.txt to the end of /boot/config.txt or modify ansible/MFRC522-trigger.yml to modify /etc/config instead od /etc/userconfig.txt
 * on your local machine clone the repo https://github.com/layereight/MFRC522-trigger to a direcory named 'devel' (or adjust folder in MFRC522-trigger.yml)
 ```
 $ mkdir devel
 $ cd devel
 $ git clone https://github.com/layereight/MFRC522-trigger.git
 $ cd MFRC522-trigger/ansible
-$ vi inventory
+$ cp inventory my-inventory
+$ vi my-inventory
 ```
 * replace the contents of the file *inventory* to point to your music box (e.g. my_raspi_host)
 * since this contains your password it is recommended that you *copy* inventory to a new file *my-inventory* (which is ignopred from git) so you don't accidentally push your settings
