@@ -51,7 +51,7 @@ def execute_action(event: NfcEvent, tag_id: str):
 
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
-statusled.setup()
+statusled.setRed()
 validate_config(config)
 logging.info("Press Ctrl-C to stop.")
 
