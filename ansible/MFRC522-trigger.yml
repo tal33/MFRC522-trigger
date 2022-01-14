@@ -91,6 +91,13 @@
         dest: "{{ target_dir }}/config.json"
         force: no
 
+    - name: Copy tags.csv from sample file
+      copy:
+        src: "{{ target_dir }}/tags.sample.csv"
+        remote_src: yes
+        dest: "{{ target_dir }}/tags.csv"
+        force: no
+
 - name: Install MFRC522-trigger as systemd service
   hosts: my_pi
   gather_facts: false
