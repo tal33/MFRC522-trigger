@@ -4,74 +4,30 @@
 import pirc522
 import sys
 from os import path
-import urllib.request
-import subprocess
 import time
 import csv
 import json
 import logging
 import logging.config
 import logging.handlers
-
 import statusled
 import volumiostatus
-from actions import NfcEvent, resolve
+from actions import NfcEvent, execute_action
 from config import validate_config
-
-def execute_curl(url):
-    logging.info("Gonna curl '" + url + "'")
-    try:
-        urllib.request.urlopen(url)
-    except Exception:
-        logging.error("Unable to open url " + url, sys.exc_info()[0])
-
-
-def execute_command(command):
-    logging.info("Gonna execute '" + command + "'")
-    subprocess.call(command, shell=True, stdout=subprocess.DEVNULL)
-
-
-ACTION_MAP = {
-    "curl": lambda action, param1: execute_curl(action["url"].replace("<param1>", param1)),
-    "command": lambda action, param1: execute_command(action["command"].replace("<param1>", param1))
-}
-
-
-def execute_action(event: NfcEvent, tag_id: str):
-    # get tag definition
-    if tag_id not in tags:
-        logging.warning("No mapping for tag " + tag_id)
-        return
-    tagdef = tags[tag_id]
-    tag_param1 = tagdef['param1']
-    template_id = tagdef['templateid']
-    if (template_id not in templates):
-        logging.warning("Unknown actions-template " + template_id)
-        return
-    template = templates[template_id]
-    template_name = template['name'].replace("<param1>", tag_param1)
-    # get action from template
-    resolved_actions = resolve(template, event)
-    if (resolved_actions is None):
-        logging.debug("No action for event " + event.name +" for tag " + tag_id + " in template " + template_name + " with id " + template_id)
-        return
-    # execute actions from template
-    logging.info("Executing '" + template_name + " for " + event.name)
-    for action in resolved_actions:
-        ACTION_MAP[action["type"]](action, tag_param1)
 
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
 statusled.setRed()
 logging.info("Press Ctrl-C to stop.")
 
-# read configs
+# read config
 pathname = path.dirname(path.abspath(__file__))
 logging.config.fileConfig(pathname + '/logging.ini')
 config = json.load(open(pathname + '/config.json', encoding="utf-8"))
 validate_config(config)
-
 templates = config['tag-templates']
+
+# build tags dictionary from tags.csv
 tags = {} # tag : {param1, templateid}
 with open(pathname + '/tags.csv', 'r', newline='') as file:
     tagscsv = csv.DictReader(file, dialect='unix')
@@ -120,7 +76,7 @@ while True:
         # on error continue and retry
         if error:
             # logging.info("error anticoll")
-            execute_action(NfcEvent.REMOVE, current_tag)
+            execute_action(tags, templates, NfcEvent.REMOVE, current_tag)
             current_tag = ''
             polling = False
             statusled.setGreen()
@@ -141,7 +97,7 @@ while True:
 
         statusled.setYellow()
         # execute an action for the reading tag
-        execute_action(NfcEvent.REDETECT if current_tag == last_tag else NfcEvent.DETECT, tag_id)
+        execute_action(tags, templates, NfcEvent.REDETECT if current_tag == last_tag else NfcEvent.DETECT, tag_id)
 
         last_tag = current_tag
     except KeyboardInterrupt:
