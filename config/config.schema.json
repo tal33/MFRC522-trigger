@@ -48,20 +48,28 @@
   "type": "object",
   "title": "The root schema",
   "additionalProperties": false,
-  "patternProperties": {
-    "^.+$": {
+  "required": ["tag-templates"],
+  "properties": {
+    "tag-templates": {
       "type": "object",
-      "title": "Schema holding name and actions for a tag",
-      "required": ["name", "ondetect"],
+      "title": "templates dictionary",
       "additionalProperties": false,
-      "properties": {
-        "name": {
-          "type": "string",
-          "title": "Alias name for the tag with the given id."
-        },
-        "ondetect": { "$ref": "#/definitions/actions" },
-        "onremove": { "$ref": "#/definitions/actions" },
-        "onredetect": { "$ref": "#/definitions/actions" }
+      "patternProperties": {
+        "^.+$": {
+          "type": "object",
+          "title": "Schema holding name and actions for a tag",
+          "required": ["name", "ondetect"],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Alias name for the tag with the given id."
+            },
+            "ondetect": { "$ref": "#/definitions/actions" },
+            "onremove": { "$ref": "#/definitions/actions" },
+            "onredetect": { "$ref": "#/definitions/actions" }
+          }
+        }
       }
     }
   }

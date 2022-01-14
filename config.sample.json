@@ -1,45 +1,34 @@
 {
-  "1234567890123": {
-    "name": "A very nice tag, triggering 2 actions: playing a playlist and setting the volume.",
-    "ondetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=my_playlist_1"
-      },
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=volume&volume=40"
-      }
-    ]
-  },
-  "9876543210987": {
-    "name": "An even nicer tag",
-    "ondetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=my_playlist_2"
-      }
-    ],
-    "onremove": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=pause"
-      }
-    ],
-    "onredetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=play"
-      }
-    ]
-  },
-  "5432109876543": {
-    "name": "This tag is also nice",
-    "ondetect": [
-      {
-        "type": "command",
-        "command": "sudo shutdown -h now"
-      }
-    ]
+  "tag-templates": {
+    "volumio-play": {
+      "name": "Volumio Playlist <CODE>",
+      "ondetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<CODE>"
+        }
+      ],
+      "onremove": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=pause"
+        }
+      ],
+      "onredetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=play"
+        }
+      ]
+    },
+    "shutdown": {
+      "name": "Shutdown (<CODE>)",
+      "ondetect": [
+        {
+          "type": "command",
+          "command": "sudo shutdown -h now"
+        }
+      ]
+    }
   }
 }

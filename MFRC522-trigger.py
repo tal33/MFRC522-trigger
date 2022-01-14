@@ -68,9 +68,10 @@ logging.info("Press Ctrl-C to stop.")
 # read configs
 pathname = path.dirname(path.abspath(__file__))
 logging.config.fileConfig(pathname + '/logging.ini')
-templates = json.load(open(pathname + '/config.json', encoding="utf-8"))
-validate_config(templates)
+config = json.load(open(pathname + '/config.json', encoding="utf-8"))
+validate_config(config)
 
+templates = config['tag-templates']
 tags = {} # tag : {code, templateid}
 with open(pathname + '/tags.csv', 'r', newline='') as file:
     tagscsv = csv.DictReader(file, dialect='unix')
