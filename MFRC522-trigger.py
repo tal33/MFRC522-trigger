@@ -7,6 +7,7 @@ from os import path
 import urllib.request
 import subprocess
 import time
+import csv
 import json
 import logging
 import logging.config
@@ -16,11 +17,6 @@ import statusled
 import volumiostatus
 from actions import NfcEvent, resolve
 from config import validate_config
-
-pathname = path.dirname(path.abspath(__file__))
-logging.config.fileConfig(pathname + '/logging.ini')
-config = json.load(open(pathname + '/config.json', encoding="utf-8"))
-
 
 def execute_curl(url):
     logging.info("Gonna curl '" + url + "'")
@@ -36,25 +32,55 @@ def execute_command(command):
 
 
 ACTION_MAP = {
-    "curl": lambda action: execute_curl(action["url"]),
-    "command": lambda action: execute_command(action["command"])
+    "curl": lambda action, code: execute_curl(action["url"].replace("<CODE>", code)),
+    "command": lambda action, code: execute_command(action["command"].replace("<CODE>", code))
 }
 
 
 def execute_action(event: NfcEvent, tag_id: str):
-
-    resolved_actions = resolve(config, event, tag_id)
-
+    # get tag definition
+    if tag_id not in tags:
+        logging.warning("No mapping for tag " + tag_id)
+        return
+    tagdef = tags[tag_id]
+    tag_code = tagdef['code']
+    template_id = tagdef['templateid']
+    if (template_id not in templates):
+        logging.warning("Unknown actions-template " + template_id)
+        return
+    template = templates[template_id]
+    template_name = template['name'].replace("<CODE>", tag_code)
+    # get action from template
+    resolved_actions = resolve(template, event)
+    if (resolved_actions is None):
+        logging.debug("No action for event " + event.name +" for tag " + tag_id + " in template " + template_name + " with id " + template_id)
+        return
+    # execute actions from template
+    logging.info("Executing '" + template_name + " for " + event.name)
     for action in resolved_actions:
-        ACTION_MAP[action["type"]](action)
-
+        ACTION_MAP[action["type"]](action, tag_code)
 
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
 statusled.setRed()
-validate_config(config)
 logging.info("Press Ctrl-C to stop.")
 
+# read configs
+pathname = path.dirname(path.abspath(__file__))
+logging.config.fileConfig(pathname + '/logging.ini')
+templates = json.load(open(pathname + '/config.json', encoding="utf-8"))
+validate_config(templates)
+
+tags = {} # tag : {code, templateid}
+with open(pathname + '/tags.csv', 'r', newline='') as file:
+    tagscsv = csv.DictReader(file, dialect='unix')
+    for row in tagscsv:
+        action_template = templates[row['template']]
+        tags[row['tag']] = {'code': row['code'], 'templateid': row['template']}
+        print (tags[row['tag']])
+print (tags)
+
+# wait for volumio
 volumiostatus.waitForVolumio()
 time.sleep(5)   # volumio API is ready before volumio is - so just wait a little longer
 logging.info("Volumio is ready")

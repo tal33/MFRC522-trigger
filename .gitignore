@@ -5,3 +5,4 @@ config.json
 *.pyc
 *.iml
 ansible/my-inventory
+tags.csv
