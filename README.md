@@ -11,6 +11,13 @@
   * executing a command line
 * This is just an experimental fork of [MFRC522-trigger from layereight](https://github.com/layereight/MFRC522-trigger/) to tailor it to my needs.
   For the time being I would recommend you use the original version instead of my fork. Big thanks to layereight for this nice implementation!
+  Main modifications are
+  * RGB status led (green when available, yellew when tag detected, red during startup/shutdown)
+  * optimized for multiple tags all calling (parameterized) the same action by adding a tags.csv file and making the config provide templates (in my case every tag tells volumio to play a different playlist)
+  * waiting for volumio availability during startup
+  * modified ansible deployment
+    * no self-cloning of this repo
+    * modifying /boot/userconfig.txt instead of /boot/config.txt as is recommended with volumio3
 * MFRC522-trigger is based on [pirc522](https://github.com/ondryaso/pi-rc522) which is based on the famous 
 [MFRC522-python](https://github.com/mxgxw/MFRC522-python)
 
@@ -122,6 +129,11 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
 ```
 
 # Configuration
+* For every tag of yours add a line to tags.csv with 
+  * first (tag): the unique id of that tag
+  * second (template): id that defines what should be performed when this tag is detected or removed
+    * the value corresponds to a tag-template name in config.json
+  * third (code): in the tag-template the string "<CODE>" will be replaced by this value to customize the action of that template. For example specify the name of the playlist to play
 
 ## JSON schema
 
@@ -178,20 +190,28 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
   "type": "object",
   "title": "The root schema",
   "additionalProperties": false,
-  "patternProperties": {
-    "^[0-9]+$": {
+  "required": ["tag-templates"],
+  "properties": {
+    "tag-templates": {
       "type": "object",
-      "title": "Schema holding name and actions for a tag",
-      "required": ["name", "ondetect"],
+      "title": "templates dictionary",
       "additionalProperties": false,
-      "properties": {
-        "name": {
-          "type": "string",
-          "title": "Alias name for the tag with the given id."
-        },
-        "ondetect": { "$ref": "#/definitions/actions" },
-        "onremove": { "$ref": "#/definitions/actions" },
-        "onredetect": { "$ref": "#/definitions/actions" }
+      "patternProperties": {
+        "^.+$": {
+          "type": "object",
+          "title": "Schema holding name and actions for a tag",
+          "required": ["name", "ondetect"],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Alias name for the tag with the given id."
+            },
+            "ondetect": { "$ref": "#/definitions/actions" },
+            "onremove": { "$ref": "#/definitions/actions" },
+            "onredetect": { "$ref": "#/definitions/actions" }
+          }
+        }
       }
     }
   }
@@ -205,50 +225,50 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
 
 ```json
 {
-  "1234567890123": {
-    "name": "A very nice tag, triggering 2 actions: playing a playlist and setting the volume.",
-    "ondetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=my_playlist_1"
-      },
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=volume&volume=40"
-      }
-    ]
-  },
-  "9876543210987": {
-    "name": "An even nicer tag",
-    "ondetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=my_playlist_2"
-      }
-    ],
-    "onremove": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=pause"
-      }
-    ],
-    "onredetect": [
-      {
-        "type": "curl",
-        "url": "http://localhost:3000/api/v1/commands/?cmd=play"
-      }
-    ]
-  },
-  "5432109876543": {
-    "name": "This tag is also nice",
-    "ondetect": [
-      {
-        "type": "command",
-        "command": "sudo shutdown -h now"
-      }
-    ]
+  "tag-templates": {
+    "volumio-play": {
+      "name": "Volumio Playlist <CODE>",
+      "ondetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<CODE>"
+        }
+      ],
+      "onremove": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=pause"
+        }
+      ],
+      "onredetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=play"
+        }
+      ]
+    },
+    "shutdown": {
+      "name": "Shutdown (<CODE>)",
+      "ondetect": [
+        {
+          "type": "command",
+          "command": "sudo shutdown -h now"
+        }
+      ]
+    }
   }
 }
+
+```
+
+## Example csv for tags
+
+<!-- embedme tags.sample.csv -->
+
+```csv
+"tag","template","code"
+"123456789000","volumio-play","Chip001"
+"123456789001","shutdown","Chip002"
 ```
 
 # Roadmap
