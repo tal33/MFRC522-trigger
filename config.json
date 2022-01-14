@@ -1,0 +1,39 @@
+{
+  "volumio": {
+    "url": "http://localhost:3000",
+    "startup-delay": 5
+  },
+
+  "tag-templates": {
+    "volumio-play": {
+      "name": "Volumio Playlist <param1>",
+      "ondetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<param1>"
+        }
+      ],
+      "onremove": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=pause"
+        }
+      ],
+      "onredetect": [
+        {
+          "type": "curl",
+          "url": "http://localhost:3000/api/v1/commands/?cmd=play"
+        }
+      ]
+    },
+    "shutdown": {
+      "name": "Shutdown (<param1>)",
+      "ondetect": [
+        {
+          "type": "command",
+          "command": "sudo shutdown -h now"
+        }
+      ]
+    }
+  }
+}
