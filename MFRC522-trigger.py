@@ -41,7 +41,8 @@ with open(pathname + '/tags.csv', 'r', newline='') as file:
             continue
         action_template = templates[templateid]
         tags[row['tag']] = {'param1': row['param1'], 'templateid': templateid}
-logging.info("Known Tags:" + tags)
+logging.info("Known Tags:")
+logging.info(tags)
 
 # wait for volumio
 if (volumio_config is not None):
