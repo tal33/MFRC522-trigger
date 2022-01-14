@@ -32,8 +32,12 @@ tags = {} # tag : {param1, templateid}
 with open(pathname + '/tags.csv', 'r', newline='') as file:
     tagscsv = csv.DictReader(file, dialect='unix')
     for row in tagscsv:
-        action_template = templates[row['template']]
-        tags[row['tag']] = {'param1': row['param1'], 'templateid': row['template']}
+        templateid = row['template']
+        if (templateid not in templates):
+            logging.warning("Template '" + templateid + "' missing in tag-templates")
+            continue
+        action_template = templates[templateid]
+        tags[row['tag']] = {'param1': row['param1'], 'templateid': templateid}
 logging.info(tags)
 
 # wait for volumio
