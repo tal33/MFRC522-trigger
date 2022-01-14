@@ -49,7 +49,7 @@
   "title": "The root schema",
   "additionalProperties": false,
   "patternProperties": {
-    "^[0-9]+$": {
+    "^.+$": {
       "type": "object",
       "title": "Schema holding name and actions for a tag",
       "required": ["name", "ondetect"],
