@@ -1,5 +1,5 @@
-<a href="https://github.com/layereight/MFRC522-trigger/actions">
-  <img alt="GitHub Actions status" src="https://github.com/layereight/MFRC522-trigger/workflows/test/badge.svg" />
+<a href="https://github.com/tal33/MFRC522-trigger/actions">
+  <img alt="GitHub Actions status" src="https://github.com/tal33/MFRC522-trigger/workflows/test/badge.svg" />
 </a>
 
 # MFRC522-trigger
@@ -18,6 +18,9 @@
   * modified ansible deployment
     * no self-cloning of this repo
     * modifying /boot/userconfig.txt instead of /boot/config.txt as is recommended with volumio3
+  * modified configuration
+    * config.json now contains templates and not the tags itself
+    * removed support for legacy configuration format
 * MFRC522-trigger is based on [pirc522](https://github.com/ondryaso/pi-rc522) which is based on the famous 
 [MFRC522-python](https://github.com/mxgxw/MFRC522-python)
 

@@ -15,9 +15,9 @@ def resolve(template: dict, event: NfcEvent):
     # logging.debug("Action " + event.name + " for tag " + tag_id)
 
     event_to_key_map = {
-        NfcEvent.DETECT: "ondetect" if "ondetect" in template else "url",
+        NfcEvent.DETECT: "ondetect",
         NfcEvent.REMOVE: "onremove",
-        NfcEvent.REDETECT: "onredetect" if "onredetect" in template else "ondetect" if "ondetect" in template else "url"
+        NfcEvent.REDETECT: "onredetect" if "onredetect" in template else "ondetect"
     }
 
     event_key = event_to_key_map[event]
@@ -25,12 +25,4 @@ def resolve(template: dict, event: NfcEvent):
     if event_key not in template:
         return
 
-    # configure list of actions
-    if type(template[event_key]) is list:
-        return template[event_key]
-    # legacy: just one action
-    elif type(template[event_key]) is dict:
-        return [template[event_key]]
-    # very legacy: just url
-    else:
-        return [{"type": "curl", "url": template[event_key]}]
+    return template[event_key]

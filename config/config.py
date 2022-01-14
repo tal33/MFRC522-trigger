@@ -16,6 +16,5 @@ def validate_config(config: object):
         return True
     except JsonSchemaException as e:
         logging.warning("Your config is invalid: %s!", e)
-        logging.warning("NOTE: Support for legacy formats of the configuration will be dropped in future releases!")
-        logging.warning("Please update your configuration file according to https://github.com/layereight/MFRC522-trigger#json-schema.")
+        logging.warning("Please update your configuration file according to https://github.com/tal33/MFRC522-trigger#json-schema.")
         return False
