@@ -32,8 +32,8 @@ def execute_command(command):
 
 
 ACTION_MAP = {
-    "curl": lambda action, code: execute_curl(action["url"].replace("<CODE>", code)),
-    "command": lambda action, code: execute_command(action["command"].replace("<CODE>", code))
+    "curl": lambda action, param1: execute_curl(action["url"].replace("<param1>", param1)),
+    "command": lambda action, param1: execute_command(action["command"].replace("<param1>", param1))
 }
 
 
@@ -43,13 +43,13 @@ def execute_action(event: NfcEvent, tag_id: str):
         logging.warning("No mapping for tag " + tag_id)
         return
     tagdef = tags[tag_id]
-    tag_code = tagdef['code']
+    tag_param1 = tagdef['param1']
     template_id = tagdef['templateid']
     if (template_id not in templates):
         logging.warning("Unknown actions-template " + template_id)
         return
     template = templates[template_id]
-    template_name = template['name'].replace("<CODE>", tag_code)
+    template_name = template['name'].replace("<param1>", tag_param1)
     # get action from template
     resolved_actions = resolve(template, event)
     if (resolved_actions is None):
@@ -58,7 +58,7 @@ def execute_action(event: NfcEvent, tag_id: str):
     # execute actions from template
     logging.info("Executing '" + template_name + " for " + event.name)
     for action in resolved_actions:
-        ACTION_MAP[action["type"]](action, tag_code)
+        ACTION_MAP[action["type"]](action, tag_param1)
 
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
@@ -72,14 +72,13 @@ config = json.load(open(pathname + '/config.json', encoding="utf-8"))
 validate_config(config)
 
 templates = config['tag-templates']
-tags = {} # tag : {code, templateid}
+tags = {} # tag : {param1, templateid}
 with open(pathname + '/tags.csv', 'r', newline='') as file:
     tagscsv = csv.DictReader(file, dialect='unix')
     for row in tagscsv:
         action_template = templates[row['template']]
-        tags[row['tag']] = {'code': row['code'], 'templateid': row['template']}
-        print (tags[row['tag']])
-print (tags)
+        tags[row['tag']] = {'param1': row['param1'], 'templateid': row['template']}
+logging.info(tags)
 
 # wait for volumio
 volumiostatus.waitForVolumio()

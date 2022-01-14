@@ -1,3 +1,3 @@
-"tag","template","code"
-"123456789000","volumio-play","Chip001"
-"123456789001","shutdown","Chip002"
+"tag","template","param1"
+"123456789000","volumio-play","MyPlaylist"
+"123456789001","shutdown",""

@@ -133,7 +133,7 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
   * first (tag): the unique id of that tag
   * second (template): id that defines what should be performed when this tag is detected or removed
     * the value corresponds to a tag-template name in config.json
-  * third (code): in the tag-template the string "<CODE>" will be replaced by this value to customize the action of that template. For example specify the name of the playlist to play
+  * third (param1): in the tag-template the string "<param1>" will be replaced by this value to customize the action of that template. For example specify the name of the playlist to play
 
 ## JSON schema
 
@@ -227,11 +227,11 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
 {
   "tag-templates": {
     "volumio-play": {
-      "name": "Volumio Playlist <CODE>",
+      "name": "Volumio Playlist <param1>",
       "ondetect": [
         {
           "type": "curl",
-          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<CODE>"
+          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<param1>"
         }
       ],
       "onremove": [
@@ -248,7 +248,7 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
       ]
     },
     "shutdown": {
-      "name": "Shutdown (<CODE>)",
+      "name": "Shutdown (<param1>)",
       "ondetect": [
         {
           "type": "command",
@@ -266,9 +266,9 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
 <!-- embedme tags.sample.csv -->
 
 ```csv
-"tag","template","code"
-"123456789000","volumio-play","Chip001"
-"123456789001","shutdown","Chip002"
+"tag","template","param1"
+"123456789000","volumio-play","MyPlaylist"
+"123456789001","shutdown",""
 ```
 
 # Roadmap

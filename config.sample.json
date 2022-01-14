@@ -1,11 +1,11 @@
 {
   "tag-templates": {
     "volumio-play": {
-      "name": "Volumio Playlist <CODE>",
+      "name": "Volumio Playlist <param1>",
       "ondetect": [
         {
           "type": "curl",
-          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<CODE>"
+          "url": "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=<param1>"
         }
       ],
       "onremove": [
@@ -22,7 +22,7 @@
       ]
     },
     "shutdown": {
-      "name": "Shutdown (<CODE>)",
+      "name": "Shutdown (<param1>)",
       "ondetect": [
         {
           "type": "command",
