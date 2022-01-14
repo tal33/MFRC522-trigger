@@ -1,4 +1,9 @@
 {
+  "volumio": {
+    "url": "http://localhost:3000",
+    "startup-delay": 5
+  },
+
   "tag-templates": {
     "volumio-play": {
       "name": "Volumio Playlist <param1>",

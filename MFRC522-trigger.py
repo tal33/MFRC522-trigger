@@ -26,6 +26,7 @@ logging.config.fileConfig(pathname + '/logging.ini')
 config = json.load(open(pathname + '/config.json', encoding="utf-8"))
 validate_config(config)
 templates = config['tag-templates']
+volumio_config = config.get("volumio")
 
 # build tags dictionary from tags.csv
 tags = {} # tag : {param1, templateid}
@@ -41,9 +42,12 @@ with open(pathname + '/tags.csv', 'r', newline='') as file:
 logging.info(tags)
 
 # wait for volumio
-volumiostatus.waitForVolumio()
-time.sleep(5)   # volumio API is ready before volumio is - so just wait a little longer
-logging.info("Volumio is ready")
+if (volumio_config is not None):
+    volumiostatus.waitForVolumio()
+    time.sleep(volumio_config.get('startup-delay'))  # volumio API is ready before volumio is - so just wait a little longer
+    logging.info("Volumio is ready")
+else:
+    logging.info("Volumio not configured")
 statusled.setGreen()
 
 # create a reader

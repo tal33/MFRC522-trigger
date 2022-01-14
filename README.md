@@ -14,7 +14,7 @@
   Main modifications are
   * RGB status led (green when available, yellew when tag detected, red during startup/shutdown)
   * optimized for multiple tags all calling (parameterized) the same action by adding a tags.csv file and making the config provide templates (in my case every tag tells volumio to play a different playlist)
-  * waiting for volumio availability during startup
+  * waiting for volumio availability during startup (configurable in config.json)
   * modified ansible deployment
     * no self-cloning of this repo
     * modifying /boot/userconfig.txt instead of /boot/config.txt as is recommended with volumio3
@@ -137,6 +137,7 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
   * second (template): id that defines what should be performed when this tag is detected or removed
     * the value corresponds to a tag-template name in config.json
   * third (param1): in the tag-template the string "<param1>" will be replaced by this value to customize the action of that template. For example specify the name of the playlist to play
+* if you don't use volumio remove the "volumio" part from config.json
 
 ## JSON schema
 
@@ -195,6 +196,24 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
   "additionalProperties": false,
   "required": ["tag-templates"],
   "properties": {
+    "volumio": {
+      "type": "object",
+      "title": "volumio configuration",
+      "additionalProperties": false,
+      "required": ["url", "startup-delay"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "title": "base Url (without slash at the end) for volumio api",
+          "format": "uri"
+        },
+        "startup-delay": {
+          "type": "number",
+          "title": "duration in seconds to wait after volumio api is ready to ensure volumio itself is ready",
+          "format": "uri"
+        }
+      }
+    },
     "tag-templates": {
       "type": "object",
       "title": "templates dictionary",
@@ -220,6 +239,7 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
   }
 }
 
+
 ```
 
 ## Example configuration
@@ -228,6 +248,11 @@ my_raspi_host            : ok=13   changed=12   unreachable=0    failed=0
 
 ```json
 {
+  "volumio": {
+    "url": "http://localhost:3000",
+    "startup-delay": 5
+  },
+
   "tag-templates": {
     "volumio-play": {
       "name": "Volumio Playlist <param1>",

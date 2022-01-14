@@ -50,6 +50,24 @@
   "additionalProperties": false,
   "required": ["tag-templates"],
   "properties": {
+    "volumio": {
+      "type": "object",
+      "title": "volumio configuration",
+      "additionalProperties": false,
+      "required": ["url", "startup-delay"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "title": "base Url (without slash at the end) for volumio api",
+          "format": "uri"
+        },
+        "startup-delay": {
+          "type": "number",
+          "title": "duration in seconds to wait after volumio api is ready to ensure volumio itself is ready",
+          "format": "uri"
+        }
+      }
+    },
     "tag-templates": {
       "type": "object",
       "title": "templates dictionary",
