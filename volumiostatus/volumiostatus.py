@@ -3,38 +3,36 @@
 
 import requests
 import time
+import logging
 
-def getVolumioStatus():
+def getVolumioStatus(baseUrl: str):
   try:
-     response = requests.get('http://localhost:3000/api/v1/getState', timeout=2)
+     response = requests.get(baseUrl + '/api/v1/getState', timeout=2)
      response.raise_for_status()
   except requests.exceptions.HTTPError as errHttp:
-    print('HTTP error: %s', errHttp)
-    return False
+    logging.debug('Get Volumio state returned HTTP error: %s', errHttp)
+    return
   except requests.ConnectionError as errCon:
-    print('Connection error: %s', errCon)
-    return False
+    logging.debug('Get Volumio state http connection error: %s', errCon)
+    return
   except requests.Timeout as errTimeout:
-    print('Timeout: %s', errTimeout)
-    return False
+    logging.debug('Get Volumio state http timeout: %s', errTimeout)
+    return
   except requests.exceptions.RequestException as errReq:
-    print('Request Error: %s', errReq)
-    return False
+    logging.warning('Get Volumio state request Error: %s', errReq)
+    return
 
   json_data = response.json()
   if ('status' not in json_data):
-      print ('No Status returned')
-      return False
+      logging.warning ('Get Volumio state: no Status in response')
+      return
 
-  status= json_data['status']
-  print (status)
-  return True
+  return json_data['status']
   
 
-def waitForVolumio():
+def waitForVolumio(baseUrl: str):
   while True:
-    volumioReady = getVolumioStatus()
-    if volumioReady:
-      break
-    else:
-      time.sleep(2)
+    volumioState = getVolumioStatus(baseUrl)
+    if volumioState is not None:
+      return
+    time.sleep(2)

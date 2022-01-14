@@ -43,7 +43,7 @@ logging.info(tags)
 
 # wait for volumio
 if (volumio_config is not None):
-    volumiostatus.waitForVolumio()
+    volumiostatus.waitForVolumio(volumio_config.get('url'))
     time.sleep(volumio_config.get('startup-delay'))  # volumio API is ready before volumio is - so just wait a little longer
     logging.info("Volumio is ready")
 else:
