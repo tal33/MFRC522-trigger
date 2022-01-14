@@ -15,16 +15,18 @@ import volumiostatus
 from actions import NfcEvent, execute_action
 from config import validate_config
 
+#init logging and config
+pathname = path.dirname(path.abspath(__file__))
+logging.config.fileConfig(pathname + '/logging.ini')
+config = json.load(open(pathname + '/config.json', encoding="utf-8"))
+validate_config(config)
+
 # welcome message
 logging.info("Welcome to MFRC522-trigger!")
 statusled.setRed()
 logging.info("Press Ctrl-C to stop.")
 
-# read config
-pathname = path.dirname(path.abspath(__file__))
-logging.config.fileConfig(pathname + '/logging.ini')
-config = json.load(open(pathname + '/config.json', encoding="utf-8"))
-validate_config(config)
+# use config
 templates = config['tag-templates']
 volumio_config = config.get("volumio")
 
@@ -39,7 +41,7 @@ with open(pathname + '/tags.csv', 'r', newline='') as file:
             continue
         action_template = templates[templateid]
         tags[row['tag']] = {'param1': row['param1'], 'templateid': templateid}
-logging.info(tags)
+logging.info("Known Tags:" + tags)
 
 # wait for volumio
 if (volumio_config is not None):
