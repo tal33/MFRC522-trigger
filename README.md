@@ -15,6 +15,7 @@
   * RGB status led (green when available, yellew when tag detected, red during startup/shutdown)
   * optimized for multiple tags all calling (parameterized) the same action by adding a tags.csv file and making the config provide templates (in my case every tag tells volumio to play a different playlist)
   * waiting for volumio availability during startup (configurable in config.json)
+  * checking if volumio INTERNAL library is available to detect a strange startup problem sometimes happening with volumio. In this case led is alternating red and yellow (configurable in config.json with "check-internal": true)
   * modified ansible deployment
     * no self-cloning of this repo
     * modifying /boot/userconfig.txt instead of /boot/config.txt as is recommended with volumio3
