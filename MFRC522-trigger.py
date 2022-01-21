@@ -46,9 +46,19 @@ logging.info(tags)
 
 # wait for volumio
 if (volumio_config is not None):
-    volumiostatus.waitForVolumio(volumio_config.get('url'))
+    volumioBaseUrl = volumio_config.get('url')
+    volumiostatus.waitForVolumio(volumioBaseUrl)
     time.sleep(volumio_config.get('startup-delay'))  # volumio API is ready before volumio is - so just wait a little longer
     logging.info("Volumio is ready")
+
+    if (volumio_config.get('check-internal')):
+        isRed = True # blinking status
+        while (volumiostatus.isVolumioInternalLibraryPresent(volumioBaseUrl) != True):
+            statusled.setYellow() if isRed else statusled.setRed()
+            isRed = not isRed
+            time.sleep(1)
+        logging.info("INTERNAL library available")
+
 else:
     logging.info("Volumio not configured")
 statusled.setGreen()
