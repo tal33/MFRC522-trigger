@@ -20,6 +20,10 @@
                 "type": "string",
                 "title": "Url to curl when the tag is detected.",
                 "format": "uri"
+              },
+              "check-internal": {
+                "type": "boolean",
+                "title": "if true wait for INTERNAL library to be present (blinking red-yellow)."
               }
             }
           },
