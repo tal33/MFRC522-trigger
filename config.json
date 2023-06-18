@@ -2,7 +2,7 @@
   "volumio": {
     "url": "http://localhost:3000",
     "startup-delay": 5,
-    "check-internal": true
+    "check-internal": false
   },
 
   "tag-templates": {
