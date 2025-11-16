@@ -20,10 +20,6 @@
                 "type": "string",
                 "title": "Url to curl when the tag is detected.",
                 "format": "uri"
-              },
-              "check-internal": {
-                "type": "boolean",
-                "title": "if true wait for INTERNAL library to be present (blinking red-yellow)."
               }
             }
           },
@@ -69,6 +65,10 @@
           "type": "number",
           "title": "duration in seconds to wait after volumio api is ready to ensure volumio itself is ready",
           "format": "uri"
+        },
+        "check-internal": {
+          "type": "boolean",
+          "title": "if true wait for INTERNAL library to be present (blinking red-yellow)."
         }
       }
     },
